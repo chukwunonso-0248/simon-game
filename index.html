@@ -114,24 +114,18 @@
         })
 
         $(".btn").click(function() {
-            if (started) {
-                var userChosenColour = $(this).attr("id");
-                userClickPattern.push(userChosenColour);
+            
+            var userChosenColour = $(this).attr("id");
+            userClickPattern.push(userChosenColour);
 
-                playSound(userChosenColour)
+            playSound(userChosenColour)
 
-                checkAnswer(userClickPattern.length-1);
+            checkAnswer(userClickPattern.length-1);
 
-                animatePress(userChosenColour)
+            animatePress(userChosenColour)
 
-                console.log(userClickPattern);
-            }else {
-                $(".level-title").text("You need to Pree keyboard ley to Continue")
-                playSound("wrong")
-                setTimeout(function() {
-                    $(".level-title").text("Press Any Key To Continue")
-                }, 3000)
-            }
+            console.log(userClickPattern);
+            
         })
 
         function nextSequence() {
@@ -205,4 +199,5 @@
         
     </script>
 </body>
+
 </html>
