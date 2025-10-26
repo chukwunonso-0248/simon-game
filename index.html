@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Pattern 2</title>
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+   
+    <style>
+        body {
+            text-align: center;
+            background-color: #011f3f;
+        }
+        .container {
+            display: block;
+            width: 50%;
+            margin: auto;
+        }
+        .level-title {
+            font-size: 3rem;
+            font-family: "press start 2p", cursive;
+            color: #fef2bf;
+            margin: 4%;
+        }
+        .dynamic-shadow {
+            box-shadow: 0 0 50px var(--shadow-color);
+            transition: all 0.1s ease;
+        }
+        
+        .btn {
+            width: 100px;
+            height: 100px;
+            border-radius: 20px;
+            display: inline-block;
+            border: 10px solid black;
+            margin: 5%;
+        } 
+        .pressed {
+            box-shadow: 0 0 40px white; 
+            background-color: gray;
+        }
+        .red {
+            background-color: red;
+        }
+        .blue {
+            background-color: blue;
+        }
+        .yellow {
+            background-color: yellow;
+        }
+        .green {
+            background-color: green;
+        }
+        .game-over {
+            background-color: red;
+            opacity: 0.8;
+        }
+        .animate-pattern {
+            box-shadow: 0 0 80px yellow;
+        }
+        @media (width <= 400px) {
+            .btn {
+            width: 100px;
+            height: 100px;
+            border-radius: 20px;
+            display: inline-block;
+            border: 10px solid black;
+            margin: 5%;
+        } 
+        .container {
+            display: block;
+            width: 100%;
+            margin: auto;
+        }
+        .level-title {
+            font-size: 2rem;
+            font-family: "press start 2p", cursive;
+            color: #fef2bf;
+            margin: 2%;
+        }
+        }
+        .myBtn {
+            color: white;
+            background-color: green;
+            border: none;
+            padding: 10px 20px;
+            width: 80%;
+            margin-top: 30px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1 class="level-title">Press Any Key To Continue</h1>
+        <div class="row">
+            <div type="button" id="green" class="btn green"></div>
+            <div type="button" id="yellow" class="btn yellow"></div>
+        </div>
+        <div class="row">
+            <div type="button" id="blue" class="btn blue"></div>
+            <div type="button" id="red" class="btn red"></div>
+        </div>
+        <button class="myBtn">Start</button>
+    </div>
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        var buttonColor = ["red", "blue", "green", "yellow"];
+        var gamePattern = [];
+        var userClickPattern = [];
+        var started = false;
+        var level = 0;
+
+
+        // $(document).keypress(function() {
+        //     if (!started) {
+        //         nextSequence();
+        //         started = true;
+        //     }
+            
+        // })
+        $(".myBtn").click(function() {
+            if (!started) {
+                 nextSequence();
+                 started = true;
+             }
+            
+        })
+
+        $(".btn").click(function() {
+            if (started) {
+                var userChosenColour = $(this).attr("id");
+                userClickPattern.push(userChosenColour);
+
+                playSound(userChosenColour)
+
+                checkAnswer(userClickPattern.length-1);
+
+                animatePress(userChosenColour)
+
+                console.log(userClickPattern);
+            }else {
+                $(".level-title").text("You need To Pree Start To Continue")
+                playSound("wrong")
+                setTimeout(function() {
+                    $(".level-title").text("You need To Pree Start To Continue")
+                }, 3000)
+            }
+        })
+
+        function nextSequence() {
+
+            level++;
+            
+            userClickPattern = []
+
+            $(".level-title").text("Level " + level)
+            var randomNumber = Math.floor(Math.random() * 4);
+            var randomChosenColour = buttonColor[randomNumber];
+            gamePattern.push(randomChosenColour);
+
+            $("#"+randomChosenColour).fadeIn(100).fadeOut(100).fadeIn(100);
+            
+            AnimatePattern(randomChosenColour)
+
+            console.log(gamePattern);
+            
+
+            playSound(randomChosenColour);
+        }
+
+        function playSound(name) {
+            var audio = new Audio("sounds/"+ name +".mp3");
+            audio.play();
+        }
+
+        function checkAnswer(currentLevel) {
+            if (userClickPattern[currentLevel] === gamePattern[currentLevel]) {
+                if (gamePattern.length === userClickPattern.length) {
+                    console.log("Success")
+                    setTimeout(function() {
+                        nextSequence()
+                    },2000)
+                }
+            }else {
+                console.log("Wrong");
+                playSound("wrong")
+                $("body").addClass("game-over")
+                $(".level-title").text("Game Over, Press Start To Continue")
+
+                setTimeout(function() {
+                    $("body").removeClass("game-over")
+                }, 2000)
+                statrOver()
+            }
+        }
+
+        function animatePress(currentColor) {
+            $("#"+currentColor).addClass("pressed")
+            
+            setTimeout(function() {
+                    $("#"+currentColor).removeClass("pressed")
+            }, 100)
+        }
+
+        function AnimatePattern(currentColor) {
+            $("#"+currentColor).css("--shadow-color", currentColor).addClass("dynamic-shadow")
+
+            setTimeout(() => {
+                $("#"+currentColor).removeClass("dynamic-shadow")
+            }, (400));
+        }
+
+        function statrOver() {
+            gamePattern = []
+            level = 0
+            started = false
+        }
+        
+    </script>
+</body>
+</html>
